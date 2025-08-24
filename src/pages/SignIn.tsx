@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
-import { BackgroundBeams } from "../components/ui/beam"
+import { BackgroundBeams } from "../components/ui/beam";
 
 interface RegisterProps {
   onNavigate?: () => void;
