@@ -136,7 +136,7 @@ export default function Chat() {
       <ChatUI />
 
       {/* Hide scrollbars globally */}
-      <style jsx global>{`
+      <style>{`
         .no-scrollbar::-webkit-scrollbar {
           display: none;
         }
