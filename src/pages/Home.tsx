@@ -102,7 +102,7 @@ function Home() {
       </section>
       
       {/* Add global styles to fix StickyScroll centering */}
-      <style jsx global>{`
+      <style>{`
         .sticky-scroll-wrapper {
           --sticky-content-display: flex;
           --sticky-content-justify: space-between;
