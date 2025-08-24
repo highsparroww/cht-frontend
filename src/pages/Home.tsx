@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { TypewriterEffect } from "../components/ui/typewriter";
 import { Vortex } from "../components/ui/Vortex";
@@ -7,6 +6,7 @@ import { StickyScroll } from "../components/ui/stickyscroll";
 
 function Home() {
   const navigate = useNavigate();
+  
   const words = [
     { text: "Meet" },
     { text: "New" },
@@ -59,9 +59,9 @@ function Home() {
   ];
  
   return (
-    <div className="min-h-screen w-screen overflow-x-hidden">
+    <div className="min-h-screen w-screen overflow-x-hidden bg-white dark:bg-black">
       {/* Hero Section - Mobile Optimized */}
-      <section className="h-screen w-full relative">
+      <section className="h-screen w-full relative -mb-1">
         <Vortex
           backgroundColor="#000000"
           particleCount={200}
@@ -97,7 +97,7 @@ function Home() {
       </section>
       
       {/* Sticky Scroll Section - Mobile Responsive */}
-      <section className="w-full">
+      <section className="w-full bg-white dark:bg-black">
         <div className="sticky-scroll-wrapper">
           <StickyScroll content={stickyContent} />
         </div>
@@ -109,6 +109,13 @@ function Home() {
         .sticky-scroll-wrapper {
           width: 100%;
           overflow-x: hidden;
+          background: white;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+          .sticky-scroll-wrapper {
+            background: black;
+          }
         }
         
         /* Mobile styles (default) */
@@ -152,6 +159,7 @@ function Home() {
           width: 100% !important;
           min-height: 100vh !important;
           text-align: center !important;
+          background: white !important;
         }
         
         /* Title and description responsive sizing */
@@ -262,6 +270,26 @@ function Home() {
             animation-iteration-count: 1 !important;
             transition-duration: 0.01ms !important;
           }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+          .content-item {
+            background: black !important;
+          }
+          
+          .sticky-scroll-wrapper {
+            background: black;
+          }
+        }
+        
+        /* Explicit dark mode classes */
+        .dark .content-item {
+          background: black !important;
+        }
+        
+        .dark .sticky-scroll-wrapper {
+          background: black;
         }
       `}</style>
     </div>
