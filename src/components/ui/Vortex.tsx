@@ -32,7 +32,8 @@ export const Vortex = ({
   backgroundColor = "#000000",
 }: VortexProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationFrameId = useRef<number>();
+const animationFrameId = useRef<number | null>(null);
+
   const noise3D = createNoise3D();
   const tickRef = useRef(0);
 
