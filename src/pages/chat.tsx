@@ -14,6 +14,7 @@ import { motion } from "framer-motion";
 import { StarsBackground } from "../components/ui/starsback";
 import { ShootingStars } from "../components/ui/shootingstar";
 import IconRipple from "../components/ui/icon-ripple";
+import { joinRoom } from "../lib/socket";
 
 // =======================
 // MAIN CHAT PAGE
@@ -155,36 +156,48 @@ export default function Chat() {
 const ChatUI = () => {
   type Message = {
     text: string;
-    sender: "me" | "bot";
+    sender: string; // "me" | other username
   };
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [recording, setRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // === Phoenix channel integration ===
+  const channelRef = useRef<any>(null);
+  // Import joinRoom at the top of the file instead of using require
 
-  // Smooth auto-scroll
   useEffect(() => {
-    const el = messagesEndRef.current;
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "end" });
-    }
+    // join backend channel
+    const channel = joinRoom("lobby");
+    channelRef.current = channel;
+    channelRef.current = channel;
+
+    // listen for messages
+    channel.on("new_msg", (msg: any) => {
+      setMessages((prev) => [
+        ...prev,
+        { text: msg.body, sender: msg.user },
+      ]);
+    });
+
+    return () => {
+      channel.leave();
+    };
+  }, []);
+
+  // smooth scroll
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSend = () => {
-    if (input.trim() === "") return;
+    if (!input.trim() || !channelRef.current) return;
 
-    const newMessage: Message = { text: input, sender: "me" };
-    setMessages((prev) => [...prev, newMessage]);
+    // push message to backend
+    channelRef.current.push("new_msg", { body: input });
 
-    // Fake bot reply
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { text: "Got it: " + input, sender: "bot" },
-      ]);
-    }, 800);
-
+    setMessages((prev) => [...prev, { text: input, sender: "me" }]);
     setInput("");
   };
 
@@ -204,7 +217,7 @@ const ChatUI = () => {
       <div className="relative z-20 flex flex-col h-full">
         {/* Header */}
         <header className="p-4 bg-black/80 backdrop-blur-sm border-b border-neutral-800 text-center font-bold text-lg">
-          Incognito.h — Chat
+          Incognito.h
         </header>
 
         {/* Messages */}
@@ -221,16 +234,14 @@ const ChatUI = () => {
                   msg.sender === "me" ? "justify-end" : "justify-start"
                 }`}
               >
-                {/* Avatar Left (Bot) */}
-                {msg.sender === "bot" && (
+                {msg.sender !== "me" && (
                   <img
-                    src="https://api.dicebear.com/7.x/avataaars/svg?seed=bot"
+                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${msg.sender}`}
                     className="h-8 w-8 rounded-full"
-                    alt="Bot Avatar"
+                    alt="Avatar"
                   />
                 )}
 
-                {/* Bubble */}
                 <div
                   className={`px-4 py-2 rounded-lg shadow text-sm leading-relaxed break-words
                     ${
@@ -243,7 +254,6 @@ const ChatUI = () => {
                   {msg.text}
                 </div>
 
-                {/* Avatar Right (Me) */}
                 {msg.sender === "me" && (
                   <img
                     src="https://api.dicebear.com/7.x/avataaars/svg?seed=me"
@@ -291,6 +301,7 @@ const ChatUI = () => {
     </div>
   );
 };
+
 
 // =======================
 // LOGO COMPONENTS

@@ -70,9 +70,7 @@ function Home() {
           containerClassName="h-full w-full"
           className="flex flex-col items-center justify-center text-center h-full px-4 sm:px-6 lg:px-8"
         >
-          <p className="text-neutral-200 text-sm sm:text-base mb-6 sm:mb-10 max-w-xs sm:max-w-none">
-            Meet New people online
-          </p>
+        
           <div className="w-full max-w-4xl">
             <TypewriterEffect
               words={words}
